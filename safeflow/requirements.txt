@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic[email]
+pydantic-settings # <--- ADD THIS LINE
+python-jose[cryptography]
+passlib[bcrypt]
+opencv-python-headless
+ultralytics
+python-multipart
+jinja2
+pyTelegramBotAPI
+python-dotenv
+aiofiles
+email-validator
+requests

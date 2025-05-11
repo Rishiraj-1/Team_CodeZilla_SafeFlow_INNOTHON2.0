@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}SafeFlow - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <h2>Live Dashboard</h2>
+    <div id="alertDisplay" class="alert-bar alert-normal">No active alerts.</div>
+
+    <div class="dashboard-main-layout">
+        {# Left Column: Stream Grid and Controls #}
+        <div class="dashboard-stream-column">
+            <div class="video-feed-grid-container card">
+                <h3>Live Feeds</h3>
+                <div id="videoFeedGrid" class="video-grid">
+                    {# Img tags for video streams will be added here by JavaScript #}
+                </div>
+                <p id="streamStatus" style="text-align: center; margin-top: 10px;">Select cameras to add to the grid.</p>
+                <div class="stream-controls">
+                    <label for="multiCameraSelect">Add Camera to Grid:</label>
+                    <select id="multiCameraSelect">
+                        <option value="">-- Select Camera --</option>
+                        {# Options populated by JS #}
+                    </select>
+                    <button id="addStreamToGridButton">Add to Grid</button>
+                    <button id="clearGridButton">Clear All Feeds</button>
+                </div>
+            </div>
+        </div>
+
+        {# Right Column: Live Data, Tools, and File Upload #}
+        <div class="dashboard-info-column">
+            <div class="live-data card">
+                <h3>Real-time Data (Focused Camera)</h3>
+                <p><em>Data below is for the last camera added or a specifically selected stream (feature TBD).</em></p>
+                <p>Camera: <span id="liveCameraName">N/A</span></p>
+                <p>Area: <span id="liveAreaName">N/A</span></p>
+                <p>Mode: <span id="liveMode">N/A</span></p>
+                <div id="generalModeData" style="display:none;">
+                    <p>Person Count: <span id="livePersonCount">0</span></p>
+                    <p>Crowd Density: <span id="liveCrowdDensity">0.00</span> p/m²</p>
+                </div>
+                <div id="tripwireModeData" style="display:none;">
+                    <p>Entries: <span id="liveEntryCount">0</span></p>
+                    <p>Exits: <span id="liveExitCount">0</span></p>
+                    <p>Current Occupancy: <span id="liveOccupancy">0</span></p>
+                </div>
+            </div>
+
+            <div class="dashboard-tools card">
+                <h3>Tools</h3>
+                <button id="addCameraButton" class="hidden-button">Add Camera</button> {# JS makes visible for all #}
+                <button id="addUpdateUserButton" class="hidden-button">Manage Users</button> {# JS for admin #}
+                <button id="manageZonesButton" class="hidden">Manage Zones</button> {# JS for admin #}
+                <button id="setupTripwireButton" class="hidden">Setup Tripwire</button> {# JS based on selection & admin #}
+                <button id="deleteCameraButton" class="delete-camera-button">Delete Focused Camera</button> {# JS based on selection & admin #}
+            </div>
+
+            <div class="video-file-upload card">
+                <h3>Process Video File</h3>
+                <input type="file" id="videoFileUpload" accept="video/*">
+                <button id="processVideoButton">Process File</button>
+                <div id="fileProcessingStatus" style="margin-top: 5px;"></div>
+                <div id="fileProcessingResults" style="margin-top: 10px; font-size: 0.9em;">
+                    <p>Max Persons: <span id="fileMaxPersons">N/A</span></p>
+                    <p>Avg Density: <span id="fileAvgDensity">N/A</span></p>
+                </div>
+            </div>
+        </div>
+    </div> {# End of dashboard-main-layout #}
+
+
+    {# MODALS - Placed outside the main layout columns for proper overlay #}
+    <div id="addCameraModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('addCameraModal')">×</span>
+            <h4>Add New Camera</h4>
+            <form id="addCameraForm">
+                <label for="camName">Name:</label> <input type="text" id="camName" required><br>
+                <label for="camArea">Area Name:</label> <input type="text" id="camArea" required><br>
+                <label for="camSource">Source (e.g., 0, IP):</label> <input type="text" id="camSource" value="0" required><br>
+                <label for="camMode">Mode:</label>
+                <select id="camMode">
+                    <option value="general">General</option>
+                    <option value="tripwire">Tripwire</option>
+                </select><br>
+                <label for="camCrowdThreshold">Crowd Threshold:</label> <input type="number" id="camCrowdThreshold" value="10"><br>
+                <label for="camAreaSqMeters">Area (m²):</label> <input type="number" step="0.1" id="camAreaSqMeters" value="20"><br>
+                <label for="camOccupancyThreshold">Occupancy Threshold:</label> <input type="number" id="camOccupancyThreshold" value="5"><br>
+                <label for="camLat">Latitude (Optional):</label> <input type="number" step="any" id="camLat" placeholder="e.g., 22.7196"><br>
+                <label for="camLon">Longitude (Optional):</label> <input type="number" step="any" id="camLon" placeholder="e.g., 22.7196"><br>
+                <button type="submit">Add Camera</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="manageUserModal" class="modal">
+         <div class="modal-content">
+            <span class="close-button" onclick="closeModal('manageUserModal')">×</span>
+            <h4>Manage Users</h4>
+            <form id="addUserForm">
+                <h5>Add User</h5>
+                <label for="userEmail">Email:</label> <input type="email" id="userEmail" required><br>
+                <label for="userPassword">Password:</label> <input type="password" id="userPassword" required><br>
+                <label for="userRole">Role:</label>
+                <select id="userRole">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select><br>
+                <button type="submit">Add User</button>
+            </form>
+            <hr>
+            <h5>Existing Users</h5>
+            <ul id="userList"></ul>
+        </div>
+    </div>
+
+    <div id="manageZoneModal" class="modal">
+         <div class="modal-content">
+            <span class="close-button" onclick="closeModal('manageZoneModal')">×</span>
+            <h4>Manage Zones</h4>
+            <form id="addZoneForm">
+                <h5>Add/Update Zone</h5>
+                <input type="hidden" id="zoneId">
+                <label for="zoneName">Name:</label> <input type="text" id="zoneName" required><br>
+                <label for="zoneType">Type:</label>
+                <select id="zoneType">
+                    <option value="overcrowded">Overcrowded</option>
+                    <option value="lockdown">Lockdown</option>
+                    <option value="conflict">Conflict/Damaged</option>
+                    <option value="safe">Safe Zone</option>
+                    <option value="camera_active">Active Camera</option>
+                </select><br>
+                <label for="zoneLat">Latitude:</label> <input type="number" step="any" id="zoneLat" required><br>
+                <label for="zoneLon">Longitude:</label> <input type="number" step="any" id="zoneLon" required><br>
+                <label for="zoneRadius">Radius (m):</label> <input type="number" step="any" id="zoneRadius"><br>
+                <label for="zoneDesc">Description:</label> <textarea id="zoneDesc"></textarea><br>
+                <button type="submit">Save Zone</button>
+            </form>
+            <hr>
+            <h5>Existing Zones</h5>
+            <ul id="zoneList"></ul>
+        </div>
+    </div>
+
+</div> {# End of .container .dashboard-container #}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='/js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}SafeFlow - Detection History & Analysis{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Specific styles for history page can go here or in style.css */
+    .history-main-layout {
+        display: flex;
+        flex-direction: column; /* Stack sections vertically */
+        gap: 25px; /* Space between sections */
+    }
+
+    .filters-card, .chart-card, .table-card {
+        /* Using the .card style from style.css for consistency */
+    }
+
+    .chart-container { /* Ensure this is styled if you didn't put it in main style.css */
+        position: relative;
+        min-height: 350px; /* Give it some min height */
+        height: 45vh; /* Relative to viewport height */
+        width: 100%; /* Take full width of its container */
+        padding: 15px;
+        background-color: #fff; /* White background for chart area */
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    #historyAreaChart {
+        border: 1px solid #eee;
+        border-radius: 4px;
+    }
+
+    .table-wrapper { /* For potential horizontal scrolling on small screens */
+        overflow-x: auto;
+    }
+    .no-data-message {
+        text-align: center;
+        padding: 30px;
+        font-style: italic;
+        color: #777;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container history-container"> {# Added .history-container for specific targeting if needed #}
+    <h2>Detection Log History & Analysis</h2>
+    <p>Review past detection events and visualize crowd trends for selected areas.</p>
+
+    <div class="history-main-layout">
+
+        {# Filters Section #}
+        <div class="filters-card card">
+            <h3>Filter Events</h3>
+            <div class="filters"> {# Existing .filters class for flex layout #}
+                <div>
+                    <label for="areaFilter">Filter by Area:</label>
+                    <select id="areaFilter">
+                        <option value="">All Areas</option>
+                        {# Options populated by JavaScript #}
+                    </select>
+                </div>
+                <div>
+                    <label for="startDateFilter">Start Date:</label>
+                    <input type="date" id="startDateFilter">
+                </div>
+                <div>
+                    <label for="endDateFilter">End Date:</label>
+                    <input type="date" id="endDateFilter">
+                </div>
+                <div> {# Wrap buttons for better alignment #}
+                    <button id="applyFilterButton" class="button-primary">Apply Filters & Update</button>
+                    <button id="clearFilterButton" class="button-secondary">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        {# Chart Section #}
+        <div class="chart-card card">
+            <h3>Crowd Trend Analysis</h3>
+            <div class="chart-container">
+                <canvas id="historyAreaChart"></canvas>
+            </div>
+            <p id="chartStatusMessage" style="text-align:center; font-style:italic; color: #666; margin-top:10px;">
+                Select an area and apply filters to view chart.
+            </p>
+        </div>
+
+        {# Table Section #}
+        <div class="table-card card">
+            <h3>Detailed Logs</h3>
+            <div class="table-wrapper">
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Camera ID</th>
+                            <th>Area Name</th>
+                            <th>Mode</th>
+                            <th>Person Count</th>
+                            <th>Density (p/m²)</th>
+                            <th>Entries</th>
+                            <th>Exits</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        {# Rows populated by JavaScript #}
+                        {# Example of a placeholder row for no data, JS will manage this #}
+                        <!-- <tr><td colspan="8" class="no-data-message">Loading history or select filters...</td></tr> -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button id="prevPageButton" disabled class="button-secondary">Previous</button>
+                <span id="currentPage">Page: 1</span>
+                <button id="nextPageButton" class="button-secondary">Next</button>
+            </div>
+        </div>
+
+    </div> {# End of .history-main-layout #}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{# Chart.js CDN should already be in base.html #}
+<script src="{{ url_for('static', path='/js/history.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,670 @@
+/* General Body and Structure */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    margin: 0;
+    background-color: #f0f2f5; /* Lighter background */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #2c3e50; /* Dark blue-grey */
+    color: white;
+    padding: 1em 1.5em; /* More padding */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8em; /* Slightly larger */
+}
+
+nav {
+    background: #34495e; /* Slightly lighter than header */
+    padding: 0.75em 1em;
+    text-align: center;
+    display: flex; /* For aligning items */
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Allow nav items to wrap */
+}
+
+nav a {
+    color: #ecf0f1; /* Lighter text */
+    margin: 0.5em 1.5em; /* More spacing */
+    text-decoration: none;
+    font-weight: 500; /* Medium weight */
+    transition: color 0.2s ease;
+}
+nav a:hover {
+    color: #ffffff; /* Brighter on hover */
+    text-decoration: underline;
+}
+nav .user-info-nav { /* Container for user email and logout */
+    margin-left: auto; /* Push to the right */
+    display: flex;
+    align-items: center;
+}
+nav #userEmailDisplay {
+    color: #bdc3c7; /* Light grey for user email */
+    margin-right: 15px;
+    font-size: 0.9em;
+}
+nav #logoutButton {
+    background-color: #e74c3c; /* Red */
+    color: white;
+    border: none;
+    padding: 0.6em 1.2em;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+nav #logoutButton:hover {
+    background-color: #c0392b; /* Darker red */
+}
+
+
+main {
+    flex-grow: 1;
+    padding: 1.5em; /* More padding around main content */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1300px; /* Wider for dashboard */
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 25px; /* More padding */
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+}
+
+/* Login Form Specifics */
+.container.login-container {
+    max-width: 450px; /* Slightly wider login */
+    margin-top: 60px;
+}
+#loginForm div {
+    margin-bottom: 18px;
+}
+#loginForm label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500; /* Medium weight */
+    color: #555;
+}
+#loginForm input[type="email"],
+#loginForm input[type="password"] {
+    width: 100%; /* Use 100% and box-sizing */
+    padding: 10px; /* More padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+#loginForm input[type="email"]:focus,
+#loginForm input[type="password"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    outline: none;
+}
+#loginForm button {
+    padding: 12px 18px; /* Larger button */
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.05em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+#loginForm button:hover {
+    background-color: #218838; /* Darker green */
+}
+.error-message {
+    color: #dc3545; /* Bootstrap danger red */
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* Dashboard Specific Layout */
+.dashboard-container > h2 { /* Target only direct h2 child */
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #007bff; /* Accent border */
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+}
+
+.dashboard-main-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Increased gap */
+}
+
+.dashboard-stream-column {
+    flex: 3;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.dashboard-info-column {
+    flex: 2;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 6px; /* Consistent rounding */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    border: 1px solid #e7e7e7;
+}
+.card h3 {
+    margin-top: 0;
+    font-size: 1.2em; /* Consistent heading size in cards */
+    color: #2c3e50; /* Dark blue for card titles */
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.controls select, .controls button, /* Old styles, might not be used if fully switched to grid */
+.dashboard-tools button,
+.video-file-upload input[type="file"], .video-file-upload button,
+.video-feed-grid-container .stream-controls select,
+.video-feed-grid-container .stream-controls button {
+    padding: 9px 14px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ced4da; /* Bootstrap-like border */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95em;
+    background-color: #e9ecef; /* Lighter grey */
+    color: #495057;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.controls button:hover, .dashboard-tools button:hover, .video-file-upload button:hover,
+.video-feed-grid-container .stream-controls button:hover {
+    background-color: #dee2e6; /* Slightly darker on hover */
+    border-color: #adb5bd;
+}
+.controls select:focus, .video-feed-grid-container .stream-controls select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    outline: none;
+}
+
+/* Video Grid Specific Styles */
+.video-feed-grid-container .stream-controls {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.video-feed-grid-container .stream-controls label {
+    font-weight: 500; /* Medium weight */
+    margin-right: 5px;
+    color: #555;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 10px;
+    min-height: 240px; /* Adjust based on desired placeholder look */
+    background-color: #e9ecef; /* Light placeholder bg */
+    padding: 15px; /* Padding around grid items */
+    border-radius: 4px;
+    border: 1px dashed #ced4da; /* Dashed border for empty grid */
+}
+
+.video-grid-item {
+    position: relative;
+    background-color: #000000; /* Black background for video */
+    aspect-ratio: 16 / 9;
+    border: 1px solid #adb5bd; /* Slightly darker border */
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer; /* Indicate clickable for focus */
+    transition: box-shadow 0.2s ease-in-out;
+}
+.video-grid-item:hover {
+    box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+}
+.video-grid-item.focused { /* Style for the focused grid item */
+    box-shadow: 0 0 0 3px #007bff; /* Blue outline for focus */
+    border-color: #007bff;
+}
+
+.video-grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.camera-name-overlay {
+    position: absolute;
+    bottom: 8px; /* More space from bottom */
+    left: 8px;   /* More space from left */
+    background-color: rgba(0, 0, 0, 0.7); /* More opaque */
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.8em;
+    border-radius: 3px;
+    pointer-events: none;
+}
+#streamStatus { /* General status for the grid */
+    font-style: italic;
+    color: #6c757d; /* Bootstrap muted color */
+    text-align: center;
+}
+
+
+.live-data p, .video-file-upload p {
+    margin: 10px 0;
+    font-size: 0.95em;
+}
+.live-data span, .video-file-upload span {
+    font-weight: 600; /* Bolder data */
+    color: #0056b3; /* Darker blue */
+}
+
+/* Alert Bar */
+.alert-bar {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500; /* Medium weight */
+    border: 1px solid transparent;
+    font-size: 0.95em;
+}
+.alert-normal { background-color: #d1ecf1; color: #0c5460; border-color: #bee5eb; } /* Bootstrap info */
+.alert-warning { background-color: #fff3cd; color: #856404; border-color: #ffeeba; } /* Bootstrap warning */
+.alert-danger { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; } /* Bootstrap danger */
+
+
+/* Modal Styling */
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.55);
+    display: flex; /* Set display to flex by default for alignment when active */
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0; /* Initially transparent */
+    visibility: hidden; /* Initially hidden and not interactive */
+    /* Transition for hiding: make visibility change instant after opacity */
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.modal.active { /* This class is added by JS to show the modal */
+    opacity: 1; /* Fade in */
+    visibility: visible; /* Make it interactive */
+    transition: opacity 0.25s ease; /* Only transition opacity on show */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 6px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    position: relative;
+    transform: scale(0.95); /* Slightly scaled down for entry animation */
+    transition: transform 0.25s ease-out;
+}
+.modal.active .modal-content {
+    transform: scale(1); /* Scale to full size when active */
+}
+
+.close-button {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 1.75em;
+    font-weight: bold;
+    color: #6c757d; /* Muted color */
+    cursor: pointer;
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 0;
+}
+.close-button:hover {
+    color: #343a40; /* Darker on hover */
+}
+
+.modal-content h4, .modal-content h5 {
+    margin-top: 0;
+    color: #343a40; /* Darker heading */
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    font-size: 1.25em;
+}
+.modal-content h5 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px 0;
+    font-weight: 500; /* Medium weight */
+    font-size: 0.9em;
+    color: #495057;
+}
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"],
+.modal-content input[type="number"],
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px; /* More space below inputs */
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+.modal-content textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.modal-content button[type="submit"] {
+    padding: 10px 18px; /* Slightly adjusted */
+    background-color: #007bff; /* Bootstrap primary */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px; /* Less top margin */
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.modal-content button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.modal-content hr { margin: 20px 0; border: 0; border-top: 1px solid #dee2e6; }
+.modal-content ul {
+    list-style-type: none;
+    padding: 0;
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.modal-content ul li {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95em;
+}
+.modal-content ul li:last-child {
+    border-bottom: none;
+}
+.modal-content ul li button {
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin-left: 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    color: #495057;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.modal-content ul li button:hover {
+    background-color: #e2e6ea;
+}
+
+
+/* History Table & Filters Styling (Using previously provided, good styles) */
+.filters { /* ... (keep good styles from before) ... */ }
+#historyTable { /* ... (keep good styles from before) ... */ }
+.pagination { /* ... (keep good styles from before) ... */ }
+
+
+/* Map Page Specifics Styling (Using previously provided, good styles) */
+#map { /* ... (keep good styles from before) ... */ }
+.legend { /* ... (keep good styles from before) ... */ }
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1.5em 0;
+    background: #2c3e50; /* Consistent dark footer */
+    color: #bdc3c7; /* Lighter text for footer */
+    margin-top: auto; /* Pushes footer to bottom */
+    font-size: 0.9em;
+}
+footer p {
+    margin: 0;
+}
+/* Add these to your existing static/css/style.css or the <style> block in history.html */
+
+/* History Page Specifics */
+.history-container > h2 { /* Target only direct h2 child of .history-container */
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+}
+.history-container > p { /* Paragraph below main heading */
+    margin-bottom: 25px;
+    font-size: 1.05em;
+    color: #555;
+}
+
+.history-main-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* More space between major sections */
+}
+
+/* Re-using .card style (ensure it's defined well globally or define here) */
+.card { /* If not already defined globally, or to override */
+    background-color: #ffffff;
+    padding: 20px 25px; /* More horizontal padding */
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.07);
+    border: 1px solid #e9ecef;
+}
+.card h3 {
+    margin-top: 0;
+    font-size: 1.25em;
+    color: #2c3e50;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+/* Filters Card Enhancements */
+.filters-card .filters {
+    display: flex;
+    flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+    align-items: flex-end; /* Align items to bottom for cleaner look with varying heights */
+    gap: 15px 20px; /* Row gap and column gap */
+}
+.filters-card .filters > div { /* Each filter group */
+    display: flex;
+    flex-direction: column; /* Stack label above input */
+}
+.filters-card .filters label {
+    margin-bottom: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #495057;
+}
+.filters-card .filters select,
+.filters-card .filters input[type="date"] {
+    padding: 9px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.95em;
+    min-width: 180px; /* Give select/date inputs some min width */
+}
+.filters-card .filters input[type="date"] {
+    line-height: normal; /* Fix potential line-height issues in date inputs */
+}
+.filters-card .filters button {
+    padding: 10px 18px;
+    font-size: 0.95em;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    border: none; /* Assuming button-primary/secondary define borders if needed */
+}
+
+/* General Button Styles (if not already in your global styles) */
+.button-primary {
+    background-color: #007bff;
+    color: white;
+}
+.button-primary:hover {
+    background-color: #0056b3;
+}
+.button-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.button-secondary:hover {
+    background-color: #545b62;
+}
+
+
+/* Chart Section Enhancements */
+.chart-card .chart-container {
+    position: relative; /* For Chart.js responsiveness */
+    height: 40vh; /* Example height, adjust as needed */
+    min-height: 300px; /* Ensure it's not too small */
+    width: 100%; /* Take full width of the card */
+    background-color: #fff; /* If card has different bg */
+    padding: 10px; /* Padding around canvas */
+    box-sizing: border-box;
+    border: 1px solid #f0f0f0; /* Subtle border for the chart area */
+    border-radius: 4px;
+}
+/* #historyAreaChart is styled by Chart.js directly based on container */
+
+#chartStatusMessage { /* Style for the "Select an area..." message */
+    text-align: center;
+    font-style: italic;
+    color: #6c757d; /* Muted color */
+    margin-top: 15px;
+    padding: 10px;
+}
+
+/* Table Section Enhancements */
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scroll for table on small screens */
+    width: 100%;
+}
+#historyTable {
+    width: 100%;
+    min-width: 700px; /* Ensure table has a min-width before scrolling, adjust as needed */
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+#historyTable th, #historyTable td {
+    border: 1px solid #e0e0e0;
+    padding: 10px 14px; /* Slightly more padding */
+    text-align: left;
+    vertical-align: middle; /* Align content vertically */
+}
+#historyTable th {
+    background-color: #f8f9fa; /* Very light grey */
+    font-weight: 600; /* Bolder */
+    color: #495057; /* Dark grey text */
+    white-space: nowrap; /* Prevent headers from wrapping */
+}
+#historyTable tr:nth-child(even) {
+    background-color: #fbfcfe; /* Very subtle striping */
+}
+#historyTable tr:hover {
+    background-color: #f1f3f5; /* Hover effect */
+}
+#historyTable td:nth-child(1), /* Timestamp */
+#historyTable td:nth-child(2) { /* Camera ID */
+    white-space: nowrap; /* Prevent wrapping for these columns */
+}
+
+
+/* Pagination Enhancements */
+.pagination {
+    text-align: center;
+    margin-top: 25px; /* More space above pagination */
+    padding-bottom: 10px; /* Space below */
+}
+.pagination button {
+    padding: 8px 16px;
+    margin: 0 6px;
+    border: 1px solid #007bff;
+    background-color: white;
+    color: #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+}
+.pagination button:hover:not(:disabled) {
+    background-color: #007bff;
+    color: white;
+}
+.pagination button:disabled {
+    border-color: #ced4da;
+    color: #adb5bd;
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+.pagination #currentPage {
+    margin: 0 12px;
+    font-weight: 500;
+    color: #333;
+}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}SafeFlow - Live Map{% endblock %}
+
+{% block head_extra %}
+<style>
+    #map {
+        height: 650px; /* Increased height a bit */
+        width: 100%;
+        border-radius: 6px; /* Match card styling */
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    }
+    .map-container-wrapper { /* For better centering/padding if needed */
+        padding: 10px 0;
+    }
+    .legend {
+        background: white;
+        padding: 12px 18px; /* More padding */
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        margin-top: 20px;
+        max-width: 300px; /* Control legend width */
+    }
+    .legend h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px; /* Increased spacing */
+        font-size: 0.9em;
+    }
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        border: 1px solid #555; /* Darker border for visibility */
+        border-radius: 4px; /* Rounded square */
+    }
+    #alternatePaths { /* If you implement this feature */
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+    }
+    #alternatePaths h4 {
+        margin-top: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Smart City Map View</h2>
+    <p>Displays active cameras and critical safety zones. Click on markers for more details.</p>
+
+    <div class="map-container-wrapper">
+        <div id="map"></div>
+    </div>
+
+    
+
+    <div class="legend">
+        <h4>Legend</h4>
+        <div class="legend-item"><span class="legend-color" style="background-color: blue; opacity: 0.7;"></span> Active Camera Zone</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: red; opacity: 0.7;"></span> Overcrowded Zone</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: orange; opacity: 0.7;"></span> Lockdown Zone</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: black; opacity: 0.7;"></span> Conflict/Damaged</div>
+        <div class="legend-item"><span class="legend-color" style="background-color: green; opacity: 0.7;"></span> Safe Zone</div>
+    </div>
+
+    <div id="alternatePaths" style="display:none;"> {# Initially hidden, JS can show if paths are generated #}
+        <h4>Guidance & Alternate Paths</h4>
+        <p>Visual cues for rerouting will appear here if defined.</p>
+        <ul id="pathInstructions"></ul>
+    </div>
+    <div class="routing-controls card" style="margin-top: 20px;">
+        <h4>Find Route</h4>
+        <label for="routeStartSelect">Start:</label>
+        <select id="routeStartSelect"><option value="">-- Select Start --</option></select>
+        <label for="routeEndSelect">End:</label>
+        <select id="routeEndSelect"><option value="">-- Select End --</option></select>
+        <button id="findRouteButton">Find Fastest Route</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{# Leaflet JS is already in base.html, so no need to add it again here #}
+<script src="{{ url_for('static', path='/js/map.js') }}"></script>
+{% endblock %}
