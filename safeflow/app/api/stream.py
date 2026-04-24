@@ -121,8 +121,7 @@ async def generate_frames(camera_id: int, db: Session):
 
 
 @router.get("/video_feed/{camera_id}")
-async def video_feed(camera_id: int, db: Session = Depends(database.get_db)):
-    # current_user: user_schema.User = Depends(get_current_active_user)
+async def video_feed(camera_id: int, db: Session = Depends(database.get_db), current_user: user_schema.User = Depends(get_current_active_user)):
     db_camera = crud_camera.get_camera(db, camera_id)
     if not db_camera:
         raise HTTPException(status_code=404, detail="Camera not found")
