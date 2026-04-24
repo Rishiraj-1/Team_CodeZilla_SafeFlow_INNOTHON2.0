@@ -14,4 +14,3 @@ python-dotenv
 aiofiles
 email-validator
 requests
-httpx

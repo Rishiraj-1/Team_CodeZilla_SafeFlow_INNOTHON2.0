@@ -248,7 +248,6 @@ safeflow/
 *   Support for multiple IP cameras.
 *   Advanced prediction modules for crowd behavior.
 *   User-specific camera assignments and permissions.
-*   More sophisticated UI/UX with a frontend framework.
 *   Database migrations (e.g., using Alembic).
 *   Containerization with Docker for easier deployment.
 *   More robust error handling and logging.

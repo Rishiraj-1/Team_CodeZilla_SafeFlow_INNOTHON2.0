@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
 import math
-import httpx # For OSRM if you use it
+import requests # For OSRM if you use it
 
 from app.db.database import get_db
 from app.schemas import user as user_schema # For auth
@@ -83,19 +83,16 @@ async def suggest_diversion_route(
         end_coords = f"{best_target_cam['longitude']},{best_target_cam['latitude']}"
         osrm_request_url = f"{OSRM_ROUTE_URL}{start_coords};{end_coords}?overview=full&geometries=geojson&steps=true"
         print(f"OSRM Request URL: {osrm_request_url}")
-        async with httpx.AsyncClient() as client:
-            osrm_response = await client.get(osrm_request_url, timeout=10.0)
-            osrm_response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
-            route_data = osrm_response.json()
+        osrm_response = requests.get(osrm_request_url, timeout=10)
+        osrm_response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+        route_data = osrm_response.json()
         if route_data.get("routes") and len(route_data["routes"]) > 0:
             route_geometry = route_data["routes"][0]["geometry"] # This is a GeoJSON LineString
             # OSRM also returns 'legs' and 'steps' for turn-by-turn if steps=true
             route_geojson = route_geometry
         else:
             print(f"OSRM found no route: {route_data.get('code')}")
-    except httpx.HTTPStatusError as e:
-        print(f"OSRM request failed with status {e.response.status_code}: {e}")
-    except httpx.RequestError as e:
+    except requests.RequestException as e:
         print(f"OSRM request failed: {e}")
     except Exception as e:
         print(f"Error processing OSRM response: {e}")
