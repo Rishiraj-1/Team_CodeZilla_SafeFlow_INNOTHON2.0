@@ -10,7 +10,6 @@ from app.db import database, models
 from app.crud import camera as crud_camera, log as crud_log
 from app.schemas import camera as camera_schema, log as log_schema, alert as alert_schema, user as user_schema
 from app.services import video_processing, alert_service
-from app.core.dependencies import get_current_active_user
 from app.core.config import settings
 
 router = APIRouter()
@@ -18,6 +17,7 @@ router = APIRouter()
 # In-memory store for last alert times per camera to avoid spamming
 last_alert_times = {}
 ALERT_COOLDOWN_SECONDS = 60  # Send alert at most once per minute per camera
+
 
 async def generate_frames(camera_id: int, db: Session):
     db_camera = crud_camera.get_camera(db, camera_id)
@@ -39,12 +39,21 @@ async def generate_frames(camera_id: int, db: Session):
     if not cap.isOpened():
         print(f"Error: Could not open video source for camera ID {camera_id} (source: {cam_source})")
         error_frame = np.zeros((480, 640, 3), dtype=np.uint8)
-        cv2.putText(error_frame, f"Error: Cannot open camera {cam_source}", (50, 240),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(
+            error_frame,
+            f"Error: Cannot open camera {cam_source}",
+            (50, 240),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (255, 255, 255),
+            2,
+        )
         _, encoded_image = cv2.imencode('.jpg', error_frame)
         frame_bytes = encoded_image.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        yield (
+            b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
+        )
         cap.release()
         return
 
@@ -111,8 +120,10 @@ async def generate_frames(camera_id: int, db: Session):
             print(f"Error encoding frame: {e}")
             continue
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        yield (
+            b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
+        )
 
         await asyncio.sleep(0.03)
 
@@ -121,12 +132,51 @@ async def generate_frames(camera_id: int, db: Session):
 
 
 @router.get("/video_feed/{camera_id}")
-async def video_feed(camera_id: int, db: Session = Depends(database.get_db), current_user: user_schema.User = Depends(get_current_active_user)):
+async def video_feed(camera_id: int, token: str = None, db: Session = Depends(database.get_db)):
+    """
+    Supports:
+    1. token query param (for <img src>)
+    2. Authorization: Bearer <token>
+    """
+
+    from jose import jwt
+    from app.crud import user as crud_user
+    from app.core.security import oauth2_scheme
+
+    user = None
+
+    # ---- Query param token (for frontend streaming) ----
+    if token:
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            email: str = payload.get("sub")
+            if email:
+                user = crud_user.get_user_by_email(db, email=email)
+        except Exception:
+            pass
+
+    # ---- Header token fallback ----
+    if not user:
+        try:
+            bearer_token = await oauth2_scheme()
+            payload = jwt.decode(bearer_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            email: str = payload.get("sub")
+            if email:
+                user = crud_user.get_user_by_email(db, email=email)
+        except Exception:
+            pass
+
+    if not user or not user.is_active:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+
     db_camera = crud_camera.get_camera(db, camera_id)
     if not db_camera:
         raise HTTPException(status_code=404, detail="Camera not found")
+
     if not db_camera.is_active:
         raise HTTPException(status_code=400, detail="Camera is not active")
 
-    return StreamingResponse(generate_frames(camera_id, db),
-                             media_type='multipart/x-mixed-replace; boundary=frame')
+    return StreamingResponse(
+        generate_frames(camera_id, db),
+        media_type='multipart/x-mixed-replace; boundary=frame'
+    )
