@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-aura-bg: #15141b;
+  --color-aura-surface: #1e1d25;
+  --color-aura-surface-sunken: #100f14;
+  --color-aura-primary: #a277ff;
+  --color-aura-secondary: #61ffca;
+  --color-aura-accent: #ffca85;
+  --color-aura-danger: #ff6767;
+  --color-aura-text-main: #edecee;
+  --color-aura-text-muted: #8a889d;
+}
+
+body {
+  margin: 0;
+  display: block;
+  background-color: var(--color-aura-bg);
+  color: var(--color-aura-text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Skeuomorphic & Aura Utilities */
+
+.skeuo-raised {
+  background: linear-gradient(145deg, #23212b, #19181f);
+  box-shadow:
+    8px 8px 16px #0d0c11,
+    -8px -8px 16px #292833;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.skeuo-sunken {
+  background: var(--color-aura-surface-sunken);
+  box-shadow:
+    inset 6px 6px 12px #0a090d,
+    inset -6px -6px 12px #1e1d25;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.skeuo-button {
+  background: linear-gradient(145deg, #1e1d25, #19181f);
+  box-shadow:
+    4px 4px 8px #0d0c11,
+    -4px -4px 8px #292833;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.skeuo-button:active {
+  box-shadow:
+    inset 4px 4px 8px #0d0c11,
+    inset -4px -4px 8px #292833;
+  background: var(--color-aura-surface-sunken);
+}
+
+.skeuo-button-primary {
+  background: linear-gradient(145deg, #a277ff, #8960e6);
+  box-shadow:
+    4px 4px 10px rgba(162, 119, 255, 0.3),
+    -4px -4px 10px rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+  transition: all 0.2s ease-in-out;
+}
+
+.skeuo-button-primary:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(145deg, #8960e6, #a277ff);
+}
+
+.aura-glow {
+  position: relative;
+}
+
+.aura-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, var(--color-aura-primary), var(--color-aura-secondary), var(--color-aura-accent));
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.aura-glow:hover::before {
+  opacity: 0.8;
+}
+
+.aura-text-gradient {
+  background: linear-gradient(to right, var(--color-aura-primary), var(--color-aura-secondary));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}

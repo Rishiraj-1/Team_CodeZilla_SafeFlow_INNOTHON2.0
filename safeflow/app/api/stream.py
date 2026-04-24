@@ -121,8 +121,25 @@ async def generate_frames(camera_id: int, db: Session):
 
 
 @router.get("/video_feed/{camera_id}")
-async def video_feed(camera_id: int, db: Session = Depends(database.get_db)):
-    # current_user: user_schema.User = Depends(get_current_active_user)
+async def video_feed(camera_id: int, token: str = None, db: Session = Depends(database.get_db)):
+    # Allow token via query param for img src tags to authenticate
+    from app.core import security
+    from app.crud import user as crud_user
+
+    if token:
+        try:
+            from jose import jwt
+            from app.core.config import settings
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            email: str = payload.get("sub")
+            if email is None:
+                raise HTTPException(status_code=401)
+            user = crud_user.get_user_by_email(db, email=email)
+            if not user or not user.is_active:
+                raise HTTPException(status_code=401)
+        except Exception:
+            raise HTTPException(status_code=401, detail="Invalid auth credentials")
+
     db_camera = crud_camera.get_camera(db, camera_id)
     if not db_camera:
         raise HTTPException(status_code=404, detail="Camera not found")
